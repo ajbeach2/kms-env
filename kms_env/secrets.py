@@ -17,7 +17,8 @@ def get_secret_string(secret_name, region_name='us-east-1'):
             SecretId=secret_name
         )
     except ClientError as e:
-        raise e
+        print(e)
+        return None
     else:
         if 'SecretString' in get_secret_value_response:
             return get_secret_value_response['SecretString']
