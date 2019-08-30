@@ -33,21 +33,20 @@ def get_secret_json(secret_name, region_name='us-east-1'):
         return {}
 
 
-def secrets_config_key(key, secret_name, default=None,
-                       region_name='us-east-1'):
+def secrets_config_key(secret_name, region_name='us-east-1'):
     secrets = get_secret_json(secret_name, region_name)
 
-    def inner(key, secret_name):
+    def inner(key, default=None):
         return os.getenv(key, secrets.get(key, default))
 
     return inner
 
 
-def secrets_config(secret_name, default=None, region_name='us-east-1'):
-    secret = get_secret_string(secret_name, region_name) or default
+def secrets_config(secret_name, region_name='us-east-1'):
+    secret = get_secret_string(secret_name, region_name)
 
-    def inner(key, secret_name):
-        return os.getenv(secret_name, secret)
+    def inner(key, default=None):
+        return os.getenv(key, secret)
 
     return inner
 
