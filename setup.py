@@ -1,6 +1,6 @@
 from setuptools import setup
 setup(
-    name='kmv-env',
+    name='kms-env',
     version='0.1.1',
     description="""Secrets Managemnt Config AWS""",
     long_description=open('README.md', 'r').read(),
