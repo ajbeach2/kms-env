@@ -17,7 +17,7 @@ def get_secret_string(secret_name, region_name='us-east-1'):
             SecretId=secret_name
         )
     except ClientError as e:
-        print(e)
+        print(secret_name, "could not be loadded:", e)
         return None
     else:
         if 'SecretString' in get_secret_value_response:
@@ -42,14 +42,15 @@ def secrets_config_key(secret_name, region_name='us-east-1'):
     return inner
 
 
-def secrets_config(secret_name, region_name='us-east-1'):
-    secret = get_secret_string(secret_name, region_name)
+def secrets_config(env, secret_name, region_name='us-east-1'):
+    try:
+        return json.loads(
+            os.getenv(env,
+                      get_secret_string(secret_name, region_name)))
 
-    def inner(key, default=None):
-        return os.getenv(key, secret)
-
-    return inner
-
+    except (json.decoder.JSONDecodeError, TypeError) as e:
+        print(e)
+        raise Exception('ENV or Secret is invalid json or None!')
 
 def get_database_config(default,
                         secret_name=None,
