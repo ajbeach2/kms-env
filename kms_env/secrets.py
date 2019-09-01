@@ -44,13 +44,15 @@ def secrets_config_key(secret_name, region_name='us-east-1'):
 
 def secrets_config(env, secret_name, region_name='us-east-1'):
     try:
-        return json.loads(
-            os.getenv(env,
-                      get_secret_string(secret_name, region_name)))
-
+        secret = os.getenv(env, None)
+        if secret:
+            return json.loads(secret)
+        else:
+            return json.loads(get_secret_string(secret_name, region_name))
     except (json.decoder.JSONDecodeError, TypeError) as e:
         print(e)
         raise Exception('ENV or Secret is invalid json or None!')
+
 
 def get_database_config(default,
                         secret_name=None,
